@@ -7,12 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-		  
-  dev-deploy:
+    dev-deploy:
     runs-on: ubuntu-latest
     environment: dev
     needs: build
@@ -39,4 +34,4 @@ jobs:
         
     - name: Run stack
       run: |
-        aws cloudformation create-stack  --stack-name devStack --template-body file://IAM-Roles.yaml --parameters file://dev_parameters.json
+        aws cloudformation create-stack  --stack-name devStack --template-body file://IAM-Roles.yaml --parameters file://dev_parameters.json 		  
