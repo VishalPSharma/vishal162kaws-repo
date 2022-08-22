@@ -47,7 +47,7 @@ jobs:
       run: aws sts get-caller-identity --region ${{ secrets.region }}
 
     - name: Copy files to s3
-      run: aws s3 sync . s3:${{ secrets.s3 }}
+      run: aws s3 sync . s3://vishal162kaws-s3-code-bucket
 
         
     - name: Run stack
