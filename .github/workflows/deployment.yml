@@ -1,0 +1,42 @@
+# Workflow for Deployment
+
+name: CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+		  
+  dev-deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: ${{ secrets.region }}
+        role-to-assume: ${{ secrets.role }}
+        role-session-name: oidcRoleSession
+        
+    - name: test assume role
+      run: aws sts get-caller-identity --region ${{ secrets.region }}
+
+    - name: Copy files to s3
+      run: aws s3 sync . s3://${{ secrets.s3 }}
+
+        
+    - name: Run stack
+      run: |
+        aws cloudformation create-stack  --stack-name devStack --template-body file://IAM-Roles.yaml --parameters file://dev_parameters.json
