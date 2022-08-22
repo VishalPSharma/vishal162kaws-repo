@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 	
 jobs:
-    dev-deploy:
+  dev-deploy:
     runs-on: ubuntu-latest
     environment: dev
     needs: build
