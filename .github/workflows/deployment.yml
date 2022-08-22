@@ -7,7 +7,7 @@ on:
   push:
     branches: [ main ]  
 
-  pull_request_review_comment:
+  permissions:
     id-token: write
     contents: read
     
@@ -43,8 +43,8 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-region: ${{ secrets.region }}
-        role-to-assume: ${{ secrets.role }}
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::509937401735:role/GitHub-CI-CD
         role-session-name: oidcRoleSession
         
     - name: test assume role
