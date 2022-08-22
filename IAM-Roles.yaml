@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Kellogg IAM Service Roles
+Parameters:
+  EnvironmentName:
+    Description: Select the Environment type as dev, qa or prod
+    Type: String
+    AllowedValues:
+        - dev
+        - qa
+        - prod
+Resources:       
+  GlueServiceRole:
+    Type: 'AWS::IAM::Role'
+    DeletionPolicy: Retain	
+    Properties:
+      RoleName: !Sub
+        - nga-${e}-glue-service-role
+        - e: !Ref EnvironmentName
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: glue.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/SecretsManagerReadWrite'
+        - 'arn:aws:iam::aws:policy/IAMFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonSNSFullAccess'        
+        - 'arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole'
+        - 'arn:aws:iam::aws:policy/service-role/AmazonSNSRole'
+  LambdaServiceRole:
+    Type: 'AWS::IAM::Role'
+    DeletionPolicy: Retain	
+    Properties:
+      RoleName: !Sub
+        - nga-${e}-lambda-service-role
+        - e: !Ref EnvironmentName
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'             
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/SecretsManagerReadWrite'
+        - 'arn:aws:iam::aws:policy/IAMFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonSNSFullAccess'        
+        - 'arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole'
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'       
+Outputs: {}
