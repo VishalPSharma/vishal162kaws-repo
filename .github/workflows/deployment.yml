@@ -1,12 +1,31 @@
-# Workflow for Deployment
+# This is a basic workflow to help you get started with Actions
+name: Git_DevOps_Pipeline
 
-name: CD
-
+# Controls when the workflow will run
 on:
+  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
-	
+    
+  pull_request:
+    branches: [ main ]
+
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    
+# A workflow rn is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a one-line script
+        run: echo Hello, world!
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.	
+        
   dev-deploy:
     runs-on: ubuntu-latest
     environment: dev
@@ -29,9 +48,10 @@ jobs:
       run: aws sts get-caller-identity --region ${{ secrets.region }}
 
     - name: Copy files to s3
-      run: aws s3 sync . s3://${{ secrets.s3 }}
+      run: aws s3 sync . s3:${{ secrets.s3 }}
 
         
     - name: Run stack
       run: |
-        aws cloudformation create-stack  --stack-name devStack --template-body file://IAM-Roles.yaml --parameters file://dev_parameters.json 		  
+
+        aws cloudformation create-stack  --stack-name devStack --template-body file://IAM-Roles.yaml --parameters file://dev_parameters.json      
